@@ -1,0 +1,9 @@
+import keyMirror from 'keymirror'; //to returns same string
+
+const ActionTypes = keyMirror({
+  GET_ERRORS: null,
+  USER_LOADING: null,
+  SET_CURRENT_USER: null
+});
+
+export default ActionTypes;
