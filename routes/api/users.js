@@ -4,12 +4,17 @@ const userController = require('../../controllers/userControllers');
 // Matches with "/api/users"
 
 router
-  .route('/findall') //new all
+  .route('/findall') //for testing
   .get(userController.findAll);
 router
-  .route('/login') //new user
-  .get(userController.findById);
-
+  .route('/register') //new user
+  .post(userController.register);
+router
+  .route('/login') //login user
+  .post(userController.login);
+router
+  .route('/auth/facebook') //login user
+  .post(userController.registerFB);
 // router
 //   .route('/login') //login user
 //   .post(userController.login);

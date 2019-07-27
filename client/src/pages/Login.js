@@ -3,7 +3,11 @@ import FacebookLogin from 'react-facebook-login';
 import { GoogleLogin } from 'react-google-login';
 // import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { loginUser } from '../actions/actions';
+import {
+  loginUser,
+  registerGoogle,
+  registerFacebook
+} from '../actions/actions';
 import logo from '../assets/errundsLogo.png'; // with import
 import './style.css';
 
@@ -22,12 +26,6 @@ class Login extends Component {
   onFailure = error => {
     alert(error);
   };
-  facebookResponse = response => {
-    console.log(response);
-  };
-  googleResponse = response => {
-    console.log(response);
-  };
   componentWillReceiveProps(nextProps) {
     if (nextProps.auth.isAuthenticated) {
       this.props.history.push('/dashboard');
@@ -39,34 +37,51 @@ class Login extends Component {
       });
     }
   }
-
   onChange = e => {
     this.setState({ [e.target.id]: e.target.value });
   };
-
   onSubmit = e => {
     e.preventDefault();
-
     const userData = {
       email: this.state.email,
       password: this.state.password
     };
-
     this.props.loginUser(userData);
   };
-
+  facebookResponse = response => {
+    const tokenBlob = new Blob(
+      [JSON.stringify({ access_token: response.accessToken }, null, 2)],
+      { type: 'application/json' }
+    );
+    const options = {
+      method: 'POST',
+      body: tokenBlob,
+      mode: 'cors',
+      cache: 'default'
+    };
+    fetch('http://127.0.0.1:5033/api/v1/users/auth/facebook', options).then(
+      res => {
+        this.props.registerFacebook(res);
+      }
+    );
+  };
+  googleResponse = response => {
+    this.props.registerGoogle(response);
+  };
   render() {
     return (
       <div className="container text-center ">
         <div className="row">
           <div className="col-12 align-self-center">
-            <form className="form-signin">
+            <form onSubmit={this.onSubmit} className="form-signin">
               <img src={logo} alt="Logo" className="m-3 p-3" />
               <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
               <label className="sr-only">Email address</label>
               <input
+                onChange={this.onChange}
+                value={this.state.email}
                 type="email"
-                id="inputEmail"
+                id="email"
                 className="form-control"
                 placeholder="Email address"
                 required=""
@@ -74,8 +89,10 @@ class Login extends Component {
               />
               <label className="sr-only">Password</label>
               <input
+                onChange={this.onChange}
+                value={this.state.password}
                 type="password"
-                id="inputPassword"
+                id="password"
                 className="form-control"
                 placeholder="Password"
                 required=""
