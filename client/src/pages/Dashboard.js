@@ -1,67 +1,101 @@
-import React, { Component } from 'react';
+import React from 'react';
+import clsx from 'clsx';
 import { connect } from 'react-redux';
 import { logoutUser } from '../actions/actions';
+import { makeStyles } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
+import LinkUI from '@material-ui/core/Link';
+
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
 import SideBar from '../components/SideBar';
-import Moment from 'react-moment';
+import Coupons from '../components/Coupons';
+import Profile from '../components/Profile';
 
-class Dashboard extends Component {
-  onLogoutClick = e => {
-    e.preventDefault();
-    this.props.logoutUser();
-  };
-
-  render() {
-    const { user } = this.props.auth;
-    console.log(this.props.auth, user);
-    const dateToFormat = Date.now();
-
-    return (
-      <div>
-        <SideBar />
-        <div className="container">
-          <div className="row">
-            <div className="col-md-16">
-              <h1> {user.name}'s Dashboard</h1>
-              <h5>
-                <Moment format="MMM Do YYYY" date={dateToFormat} />
-              </h5>
-            </div>
-          </div>
-        </div>
-
-        <div className="container">
-          <div className="row">
-            <div className="col-md-6">
-              {' '}
-              <div className="container">
-                {' '}
-                <div className="row">
-                  <h3>Welcome {user.name}</h3>
-                </div>{' '}
-                <div className="row">
-                  <div className="progress">
-                    <div
-                      className="progress-bar"
-                      role="progressbar"
-                      style="width: 25%;"
-                      aria-valuenow="25"
-                      aria-valuemin="0"
-                      aria-valuemax="100">
-                      25%
-                    </div>
-                  </div>
-                </div>
-                <div className="row">welcome</div>
-              </div>
-            </div>
-            <div className="col-md-6"> col 6</div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+function MadeWithLove() {
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      {'Built with love by the '}
+      <LinkUI color="inherit" href="https://errands.com/">
+        Errands
+      </LinkUI>
+      {' team.'}
+    </Typography>
+  );
 }
 
+const useStyles = makeStyles(theme => ({
+  root: {
+    backgroundColor: '#CEECF2',
+    display: 'flex'
+  },
+  content: {
+    flexGrow: 1,
+    height: '100vh',
+    overflow: 'auto'
+  },
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4)
+  },
+  paper: {
+    padding: theme.spacing(2),
+    display: 'flex',
+    overflow: 'auto',
+    flexDirection: 'column'
+  },
+  fixedHeight: {
+    height: 240
+  },
+  appBarSpacer: theme.mixins.toolbar
+}));
+
+function Dashboard(props) {
+  const { user, isAuthenticated } = props.auth;
+  console.log(isAuthenticated, user);
+
+  const classes = useStyles();
+
+  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+  return (
+    <div className={classes.root}>
+      <CssBaseline />
+
+      <SideBar />
+      <div className={classes.appBarSpacer} />
+
+      <main className={classes.content}>
+        <Container maxWidth="lg" className={classes.container}>
+          <Grid container spacing={3}>
+            {/* greeting */}
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
+                <h1> Welcome to your Dashboard {user.name} !!!</h1>
+              </Paper>
+            </Grid>
+            {/* coupons */}
+            <Grid item xs={12} md={8} lg={9}>
+              <Paper className={fixedHeightPaper}>
+                <Coupons />
+              </Paper>
+            </Grid>
+            {/* profile */}
+            <Grid item xs={12} md={4} lg={3}>
+              <Paper className={fixedHeightPaper}>
+                {' '}
+                <Profile />{' '}
+              </Paper>
+            </Grid>
+          </Grid>
+        </Container>
+        <MadeWithLove />
+      </main>
+    </div>
+  );
+}
 const mapStateToProps = state => ({
   auth: state.auth
 });

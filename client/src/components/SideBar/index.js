@@ -34,7 +34,7 @@ const useStyles = makeStyles({
     width: 'auto',
     height: '100vh',
     color: 'white',
-    backgroundColor: '#283593'
+    backgroundColor: '#394D59'
   },
   iconColor: {
     color: 'white'
