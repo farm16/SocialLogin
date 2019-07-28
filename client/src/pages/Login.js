@@ -15,9 +15,6 @@ class Login extends Component {
   constructor() {
     super();
     this.state = {
-      isAuthenticated: false,
-      user: null,
-      token: '',
       email: '',
       password: '',
       errors: {} //collect errors
@@ -26,7 +23,15 @@ class Login extends Component {
   onFailure = error => {
     alert(error);
   };
+  componentDidMount() {
+    // If logged in and user navigates to Register page, should redirect them to dashboard
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push('/dashboard');
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
+    // If logged in and user navigates to Register page, should redirect them to dashboard
     if (nextProps.auth.isAuthenticated) {
       this.props.history.push('/dashboard');
     }
@@ -49,24 +54,10 @@ class Login extends Component {
     this.props.loginUser(userData);
   };
   facebookResponse = response => {
-    const tokenBlob = new Blob(
-      [JSON.stringify({ access_token: response.accessToken }, null, 2)],
-      { type: 'application/json' }
-    );
-    const options = {
-      method: 'POST',
-      body: tokenBlob,
-      mode: 'cors',
-      cache: 'default'
-    };
-    fetch('http://127.0.0.1:5033/api/v1/users/auth/facebook', options).then(
-      res => {
-        this.props.registerFacebook(res);
-      }
-    );
+    this.props.registerFacebook(response, this.props.history);
   };
   googleResponse = response => {
-    this.props.registerGoogle(response);
+    this.props.registerGoogle(response, this.props.history);
   };
   render() {
     return (
@@ -154,5 +145,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { loginUser }
+  { loginUser, registerGoogle, registerFacebook }
 )(Login);

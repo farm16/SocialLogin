@@ -1,0 +1,12 @@
+{
+  "data": [
+    {
+      "name": "Item1",
+      "url": "/item1"
+    },
+    {
+      "name": "Item2",
+      "url": "/item2"
+    }
+  ]
+}

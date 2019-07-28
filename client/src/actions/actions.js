@@ -17,35 +17,56 @@ export const registerUser = (userData, history) => dispatch => {
       });
     });
 };
-export const registerFacebook = response => dispatch => {
-  const tokenBlob = new Blob(
-    [JSON.stringify({ access_token: response.accessToken }, null, 2)],
-    { type: 'application/json' }
-  );
-  const options = {
-    method: 'POST',
-    body: tokenBlob,
-    mode: 'cors',
-    cache: 'default'
-  };
-  fetch('http://localhost:5033/api/v1/auth/facebook', options).then(res => {
-    // Save to localStorage
-    // Set token to localStorage
-    console.log(res.data);
-    const { token } = res.data;
-    localStorage.setItem('jwtToken', token);
-    // Set token to Auth header
-    setAuthToken(token);
-    // Decode token to get user data
-    const decoded = jwt_decode(token);
-    // Set current user
-    dispatch(setCurrentUser(decoded));
-  });
+export const registerFacebook = (response, history) => dispatch => {
+  const userData = { clientToken: response.accessToken };
+  axios
+    .post('http://127.0.0.1:5033/api/v1/users/auth/facebook', userData)
+    .then(res => {
+      // Save to localStorage
+      // Set token to localStorage
+      console.log(res.data);
+      const { token } = res.data;
+      localStorage.setItem('jwtToken', token);
+      // Set token to Auth header
+      setAuthToken(token);
+      // Decode token to get user data
+      const decoded = jwt_decode(token);
+      // Set current user
+      dispatch(setCurrentUser(decoded));
+      history.push('/dashboard');
+    })
+    .catch(err => {
+      console.log(err);
+    }); //will change in future
 };
-export const registerGoogle = response => dispatch => {
-  //
-  dispatch(setCurrentUser(response));
+export const registerGoogle = (response, history) => dispatch => {
   console.log(response);
+  const userData = {
+    clientToken: response.accessToken,
+    name: response.profileObj.name,
+    email: response.profileObj.email,
+    imageUrl: response.profileObj.imageUrl
+  };
+  console.log(userData);
+  axios
+    .post('http://127.0.0.1:5033/api/v1/users/auth/google', userData)
+    .then(res => {
+      // Save to localStorage
+      // Set token to localStorage
+      console.log(res.data);
+      const { token } = res.data;
+      localStorage.setItem('jwtToken', token);
+      // Set token to Auth header
+      setAuthToken(token);
+      // Decode token to get user data
+      const decoded = jwt_decode(token);
+      // Set current user
+      dispatch(setCurrentUser(decoded));
+      history.push('/dashboard');
+    })
+    .catch(err => {
+      console.log(err);
+    }); //will change in future
 };
 //login user
 export const loginUser = userData => dispatch => {
