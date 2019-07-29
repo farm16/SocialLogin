@@ -37,8 +37,8 @@ const useStyles = makeStyles(theme => ({
     overflow: 'auto'
   },
   container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4)
+    // height: '100vh',
+    paddingTop: theme.spacing(2)
   },
   paper: {
     padding: theme.spacing(2),
@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column'
   },
   fixedHeight: {
-    height: 240
+    height: '80vh'
   },
   appBarSpacer: theme.mixins.toolbar
 }));

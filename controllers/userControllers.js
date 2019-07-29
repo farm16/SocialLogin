@@ -109,15 +109,11 @@ module.exports = {
       });
   },
   registerFB: function(req, res) {
+    console.log(req);
     // Find user by email
-    db.Users.findOrCreate({ where: { facebookToken: req.body.access_token } })
+    db.Users.findOne({ where: { facebookToken: req.body.clientToken } })
       .then(function(user) {
-        if (!user) {
-          return res
-            .status(401)
-            .json({ access_token: 'Access-Token Authenticated' });
-        }
-        if (user.facebook === facebook) {
+        if (user) {
           // User matched
           // Create JWT Payload
           const payload = {
@@ -144,7 +140,114 @@ module.exports = {
             }
           );
         } else {
-          return res.status(400).json({ Fail: 'Failed Facebook Login' });
+          db.Users.create({
+            facebookToken: req.body.clientToken,
+            name: req.body.name,
+            email: req.body.email,
+            imageUrl: req.body.picture,
+            password: req.body.clientToken
+          })
+            .then(function(user) {
+              const payload = {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                address: user.address,
+                phone: user.phone,
+                isTxtActive: user.isTxtActive,
+                since: user.createdAt
+              };
+              // Sign token
+              jwt.sign(
+                payload,
+                process.env.SECRETKEY,
+                {
+                  expiresIn: 31556926 // 1 year in seconds
+                },
+                (err, token) => {
+                  res.json({
+                    success: true,
+                    token: 'Bearer ' + token
+                  });
+                }
+              );
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  },
+  registerGoogle: function(req, res) {
+    console.log(req);
+    // Find user by email
+    db.Users.findOne({ where: { gmailToken: req.body.clientToken } })
+      .then(function(user) {
+        if (user) {
+          // User matched
+          // Create JWT Payload
+          const payload = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            address: user.address,
+            phone: user.phone,
+            isTxtActive: user.isTxtActive,
+            since: user.createdAt
+          };
+          // Sign token
+          jwt.sign(
+            payload,
+            process.env.SECRETKEY,
+            {
+              expiresIn: 31556926 // 1 year in seconds
+            },
+            (err, token) => {
+              res.json({
+                success: true,
+                token: 'Bearer ' + token
+              });
+            }
+          );
+        } else {
+          db.Users.create({
+            gmailToken: req.body.clientToken,
+            name: req.body.name,
+            email: req.body.email,
+            imageUrl: req.body.picture,
+            password: req.body.clientToken
+          })
+            .then(function(user) {
+              const payload = {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                address: user.address,
+                phone: user.phone,
+                isTxtActive: user.isTxtActive,
+                since: user.createdAt
+              };
+              // Sign token
+              jwt.sign(
+                payload,
+                process.env.SECRETKEY,
+                {
+                  expiresIn: 31556926 // 1 year in seconds
+                },
+                (err, token) => {
+                  res.json({
+                    success: true,
+                    token: 'Bearer ' + token
+                  });
+                }
+              );
+            })
+            .catch(err => {
+              console.log(err);
+            });
         }
       })
       .catch(err => {

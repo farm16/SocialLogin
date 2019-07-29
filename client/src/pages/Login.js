@@ -54,6 +54,7 @@ class Login extends Component {
     this.props.loginUser(userData);
   };
   facebookResponse = response => {
+    console.log(response);
     this.props.registerFacebook(response, this.props.history);
   };
   googleResponse = response => {

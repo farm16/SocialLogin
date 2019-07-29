@@ -18,7 +18,13 @@ export const registerUser = (userData, history) => dispatch => {
     });
 };
 export const registerFacebook = (response, history) => dispatch => {
-  const userData = { clientToken: response.accessToken };
+  console.log(response);
+  const userData = {
+    clientToken: response.accessToken,
+    name: response.name,
+    email: response.email,
+    imageUrl: response.picture.data.url
+  };
   axios
     .post('http://127.0.0.1:5033/api/v1/users/auth/facebook', userData)
     .then(res => {
