@@ -1,3 +1,5 @@
+This web application integrates Social Logins such as gmail oauth and facebook oauth which is then saved to a postgres database.
+
 please manually add the following in your local machine or local network :
 
 - "database name" -> "errunds",
