@@ -9,3 +9,4 @@ please manually add the following on the config file ./config/config.json :
 this was a quick project and will be disabling keys or will be implementing it as a local vars
 
 ex:
+![socialLogin](./Screen Shot 2019-08-14 at 11.24.12 AM.png)
