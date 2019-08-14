@@ -7,3 +7,5 @@ please manually add the following on the config file ./config/config.json :
 - "dialect"-> "postgres"
 
 this was a quick project and will be disabling keys or will be implementing it as a local vars
+
+ex:
